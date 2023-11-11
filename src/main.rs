@@ -10,11 +10,11 @@ mod shader;
 use miniquad::*;
 
 use glam::{vec2, Mat4, Vec2};
-use physics::Physics;
+use physics::{FlagParams, Physics};
 
 const SUB_STEPS: usize = 10;
-const WIDTH: usize = 900;
-const HEIGHT: usize = 900;
+const WIDTH: usize = 1500;
+const HEIGHT: usize = 1500;
 
 enum UpdateCommand {
     OneFrame,
@@ -41,7 +41,12 @@ impl Stage {
     pub fn new(ctx: &mut Context) -> Stage {
         quad_rand::srand(1);
 
-        let physics = Physics::new();
+        let physics = Physics::new(&[FlagParams {
+            corner: vec2(100.0, 100.0),
+            size: 1000.0,
+            width: 50,
+            height: 30,
+        }]);
 
         let index_buffer = Buffer::immutable(ctx, BufferType::IndexBuffer, &physics.get_indices());
 
@@ -181,7 +186,7 @@ fn main() {
         conf::Conf {
             window_width: WIDTH as i32,
             window_height: HEIGHT as i32,
-            high_dpi: false,
+            high_dpi: true,
             ..Default::default()
         },
         |ctx| Box::new(Stage::new(ctx)),
